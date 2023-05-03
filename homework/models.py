@@ -31,7 +31,6 @@ class Product:
 class Cart:
     """
     Класс корзины. В нем хранятся продукты, которые пользователь хочет купить.
-    TODO реализуйте все методы класса
     """
 
     # Словарь продуктов и их количество в корзине
@@ -42,30 +41,30 @@ class Cart:
         self.products = {}
 
     def add_product(self, product: Product, quantity=1):
-        """
-        Метод добавления продукта в корзину.
-        Если продукт уже есть в корзине, то увеличиваем количество
-        """
-        raise NotImplementedError
+        if product in self.products:
+            self.products[product] += quantity
+        else:
+            self.products[product] = quantity
+        return self.products
 
     def remove_product(self, product: Product, quantity=None):
-        """
-        Метод удаления продукта из корзины.
-        Если quantity не передан, то удаляется вся позиция
-        Если quantity больше, чем количество продуктов в позиции, то удаляется вся позиция
-        """
-        raise NotImplementedError
+        if quantity is None or quantity > self.products[product]:
+            del self.products[product]
+        else:
+            self.products[product] -= quantity
 
     def clear(self):
-        raise NotImplementedError
+        self.products.clear()
 
-    def get_total_price(self) -> float:
-        raise NotImplementedError
+    def get_total_price(self, quantity=None) -> float:
+        total_price = 0.0
+        for product, quantity in self.products.items():
+            total_price += product.price * quantity
+            return total_price
 
     def buy(self):
-        """
-        Метод покупки.
-        Учтите, что товаров может не хватать на складе.
-        В этом случае нужно выбросить исключение ValueError
-        """
-        raise NotImplementedError
+        for product, quantity in self.products.items():
+            if product.check_quantity(quantity):
+                product.buy(quantity)
+            else:
+                raise ValueError("Не хватает товаров на складе")
