@@ -3,7 +3,7 @@
 """
 import pytest
 
-from homework.models import Product
+from homework.models import Product, Cart
 
 
 @pytest.fixture
@@ -12,23 +12,20 @@ def product():
 
 
 class TestProducts:
-    """
-    Тестовый класс - это способ группировки ваших тестов по какой-то тематике
-    Например, текущий класс группирует тесты на класс Product
-    """
 
     def test_product_check_quantity(self, product):
-        # TODO напишите проверки на метод check_quantity
-        pass
+        assert product.check_quantity(product.quantity)
+        assert not product.check_quantity(1001)
+
 
     def test_product_buy(self, product):
-        # TODO напишите проверки на метод buy
-        pass
+        product.buy(product.quantity)
+        assert product.quantity == 0
+
 
     def test_product_buy_more_than_available(self, product):
-        # TODO напишите проверки на метод buy,
-        #  которые ожидают ошибку ValueError при попытке купить больше, чем есть в наличии
-        pass
+        with pytest.raises(ValueError, match="Вы хотите купить слишком много"):
+            product.buy(1001)
 
 
 class TestCart:
