@@ -53,7 +53,7 @@ class TestCart:
         cart.remove_product(product, 1)
         assert cart.products[product] == 100
 
-    def test_remove_all_product_from_cart(self, cart, product):
+    def test_remove_more_than_have_product_from_cart(self, cart, product):
         cart.add_product(product, 101)
         cart.remove_product(product, 102)
-        assert cart.products[product] == 0
+        assert cart.products.get(product, None) is None
