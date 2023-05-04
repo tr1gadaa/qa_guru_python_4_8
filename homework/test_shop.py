@@ -1,6 +1,3 @@
-"""
-Протестируйте классы из модуля homework/models.py
-"""
 import pytest
 
 from homework.models import Product, Cart
@@ -32,12 +29,6 @@ class TestProducts:
 
 
 class TestCart:
-    """
-    TODO Напишите тесты на методы класса Cart
-        На каждый метод у вас должен получиться отдельный тест
-        На некоторые методы у вас может быть несколько тестов.
-        Например, негативные тесты, ожидающие ошибку (используйте pytest.raises, чтобы проверить это)
-    """
 
     def test_add_product(self, cart, product):
         cart.add_product(product, 999)
@@ -57,3 +48,24 @@ class TestCart:
         cart.add_product(product, 101)
         cart.remove_product(product, 102)
         assert cart.products.get(product, None) is None
+
+    def test_clear_cart(self, cart, product):
+        cart.add_product(product, 10)
+        assert cart.products[product] == 10
+        cart.products.clear()
+        assert cart.products.get(product, None) is None
+
+    def test_get_total_price(self, cart, product):
+        cart.add_product(product, 5)
+        assert cart.products[product] == 5
+        assert cart.get_total_price(cart.products[product]) == 500
+
+    def test_buy_product(self, cart, product):
+        cart.add_product(product, 1000)
+        cart.buy()
+
+
+    def test_buy_too_much_product(self, cart, product):
+        with pytest.raises(ValueError, match='Не хватает продуктов на складе'):
+            cart.add_product(product, 1001)
+            cart.buy()
